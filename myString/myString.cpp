@@ -49,7 +49,7 @@ void MyString::Print()
 void MyString::Input()
 {
 	char buff[80];
-	cout << "Input sting: ";
+	cout << "Input string: ";
 	cin >> buff;
 	if (str != nullptr)
 	{
@@ -71,18 +71,72 @@ void MyString::MyStrcpy(MyString& obj)
 	strcpy_s(str, length + 1, obj.str);
 }
 
+bool MyString::MyStrStr(const char* str)
+{
+	bool found = false;
+	char* foundstr = strstr((*this).str, str);
+	if (foundstr != nullptr)
+	{
+		found = true;
+	}
+	return found;
+}
+
+int MyString::MyChr(char c)
+{
+	int index = -1;
+	for (int i = 0; i < length; i++)
+	{
+		if (str[i] == c)
+		{
+			index = i;
+		}
+	}
+	return index;
+}
+
 int MyString::MyStrLen()
 {
 	return length;
 }
 
+void MyString::MyStrCat(MyString& b)
+{
+	char* buff = new char[length + 1];
+	strcpy_s(buff, length + 1, str);
+	delete[] str;
+	str = new char[length + b.length + 1];
+	strcpy_s(str, length + 1, buff);
+	strcat_s(str, length + b.length + 1, b.str);
+}
+
+void MyString::MyDelChr(char c)
+{
+	int i = (*this).MyChr(c);
+	if (i != -1)
+	{
+		char* buff = new char[length + 1];
+		strcpy_s(buff, length + 1, str);
+		delete[] str;
+		str = new char[length];
+		for (int j = 0, k = 0; j < length + 1; j++)
+		{
+			if (j != i)
+			{
+				str[k] = buff[j];
+				k++;
+			}
+		}
+	}
+}
+
 int MyString::MyStrCmp(MyString& b)
 {
-	if ((*this).length < b.length)
+	if (length < b.length)
 	{
 		return -1;
 	}
-	else if ((*this).length > b.length)
+	else if (length > b.length)
 	{
 		return 1;
 	}
@@ -100,6 +154,8 @@ int main()
 {
 	MyString obj1("Hello");
 	obj1.Print();
+	cout << obj1.MyChr('e') << endl;
+
 
 	MyString obj2(obj1);
 	obj2.Print();
@@ -109,5 +165,12 @@ int main()
 	cout << obj1.MyStrCmp(obj2) << endl;
 	obj1.MyStrcpy(obj2);
 	obj1.Print();
+
+	MyString obj3("World");
+	obj2.MyStrCat(obj3);
+	obj2.Print();
+	obj3.MyDelChr('o');
+	obj3.Print();
+	cout << obj3.MyStrStr("o") << endl;
 }
 
